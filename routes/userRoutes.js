@@ -2,12 +2,13 @@ const express = require("express");
 const user_route = express();
 user_route.use(express.json());
 user_route.use(express.urlencoded({ extended: true }));
-const Artists = require("./models/artistModel");
 
-user_route.get("/artists/:id", async (req, res) => {
-  try {
-    res.json(await Artists.findById(req.params.id));
-  } catch (err) {
-    res.status(400).json(err.message);
-  }
-});
+const userController = require("../controllers/userController");
+
+user_route.get("/", userController.initialize);
+user_route.post("/artworks/", userController.uploadArt);
+user_route.put("artworks/:id", userController.updateArt);
+user_route.post("/artist/", userController.artistSignUp);
+user_route.post("/customer/", userController.customerSignUp);
+
+module.exports = user_route;

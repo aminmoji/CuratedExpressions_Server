@@ -30,14 +30,9 @@ mongoose
     process.exit();
   });
 
-//Initial Route
-app.get("/", async (req, res) => {
-  try {
-    res.json(await Artworks.find({}));
-  } catch (err) {
-    res.status(400).json(err.message);
-  }
-});
+//Importing Routes
+const userRoute = require("./routes/userRoutes");
+app.use("/", userRoute);
 
 // PORT Listening
 app.listen(PORT, () => {
