@@ -2,9 +2,17 @@ const Artists = require("../models/artistModel");
 const Artwork = require("../models/artworkModel");
 const Customers = require("../models/customerModel");
 
-const initialize = async (req, res) => {
+const getAllArtWork = async (req, res) => {
   try {
     res.json(await Artwork.find({}));
+  } catch (err) {
+    res.status(400).json(err.message);
+  }
+};
+
+const getAllArtists = async (req, res) => {
+  try {
+    res.json(await Artists.find({}));
   } catch (err) {
     res.status(400).json(err.message);
   }
@@ -45,7 +53,8 @@ const customerSignUp = async (req, res) => {
 };
 
 module.exports = {
-  initialize,
+  getAllArtWork,
+  getAllArtists,
   uploadArt,
   updateArt,
   artistSignUp,

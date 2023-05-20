@@ -5,8 +5,9 @@ user_route.use(express.urlencoded({ extended: true }));
 
 const userController = require("../controllers/userController");
 
-user_route.get("/", userController.initialize);
+user_route.get("/", userController.getAllArtWork);
 user_route.post("/artworks/", userController.uploadArt);
+user_route.get("/artists", userController.getAllArtists);
 user_route.put("artworks/:id", userController.updateArt);
 user_route.post("/artist/", userController.artistSignUp);
 user_route.post("/customer/", userController.customerSignUp);
