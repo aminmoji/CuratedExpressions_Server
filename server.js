@@ -9,12 +9,12 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 const { PORT, URL } = process.env;
 
 // Importing Models
 const Artworks = require("./models/artworkModel");
-const Artists = require("./models/artistModel");
-const Customers = require("./models/customerModel");
+const Users = require("./models/userModel");
 
 //Mongo Database Connection
 mongoose
