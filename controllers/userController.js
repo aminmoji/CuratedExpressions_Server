@@ -23,6 +23,16 @@ const getUserArtWork = async (req, res) => {
   }
 };
 
+const getArtWork = async (req, res) => {
+  try {
+    const artWorkId = req.params.id;
+    req.json(await Artwork.find({ id: artWorkId }));
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json(err.message);
+  }
+};
+
 const uploadArt = async (req, res) => {
   try {
     const artwork = new Artwork({
@@ -32,7 +42,7 @@ const uploadArt = async (req, res) => {
       medium: req.body.medium,
       user: req.body.user,
       qty: req.body.qty,
-      image: req.body.image,
+      images: req.body.images,
       tags: req.body.tags,
     });
     await artwork.save();
@@ -50,6 +60,14 @@ const updateArt = async (req, res) => {
     );
   } catch (err) {
     res.status(400).json(err.message);
+  }
+};
+
+const deleteArt = async (req, res) => {
+  try {
+    res.json(await Artwork.findByIdAndRemove(req.params.id));
+  } catch (error) {
+    res.status(400).json(error);
   }
 };
 
@@ -110,4 +128,6 @@ module.exports = {
   signUp,
   login,
   getUserArtWork,
+  getArtWork,
+  deleteArt,
 };

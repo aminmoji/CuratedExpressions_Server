@@ -9,8 +9,10 @@ const userController = require("../controllers/userController");
 
 user_route.get("/", userController.getAllArtWork);
 user_route.get("/user/:id", userController.getUserArtWork);
-user_route.post("/artworks/", userController.uploadArt);
-user_route.put("/artworks/:id", userController.updateArt);
+user_route.get("/artwork/:id", userController.getArtWork);
+user_route.get("/artwork/:id", userController.deleteArt);
+user_route.post("/artwork/", userController.uploadArt);
+user_route.put("/artwork/:id", userController.updateArt);
 user_route.post("/signup/", userController.signUp);
 user_route.post("/login/", userController.login);
 

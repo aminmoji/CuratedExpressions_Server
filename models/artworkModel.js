@@ -13,7 +13,7 @@ const artworkSchema = new mongoose.Schema(
       required: true,
     },
     qty: { type: Number, required: true },
-    image: { type: String, required: true },
+    images: { type: [String], required: true },
     tags: { type: [String], required: true },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
