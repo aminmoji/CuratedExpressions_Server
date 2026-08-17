@@ -15,7 +15,6 @@ const getAllArtWork = async (req, res) => {
 const getUserArtWork = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log(userId);
     res.json(await Artwork.find({ user: userId }));
   } catch (err) {
     console.log(err.message);
@@ -26,7 +25,7 @@ const getUserArtWork = async (req, res) => {
 const getArtWork = async (req, res) => {
   try {
     const artWorkId = req.params.id;
-    req.json(await Artwork.find({ id: artWorkId }));
+    res.json(await Artwork.findById(artWorkId));
   } catch (err) {
     console.log(err.message);
     res.status(400).json(err.message);
@@ -65,9 +64,9 @@ const updateArt = async (req, res) => {
 
 const deleteArt = async (req, res) => {
   try {
-    res.json(await Artwork.findByIdAndRemove(req.params.id));
-  } catch (error) {
-    res.status(400).json(error);
+    res.json(await Artwork.findByIdAndDelete(req.params.id));
+  } catch (err) {
+    res.status(400).json(err.message);
   }
 };
 
@@ -76,48 +75,58 @@ const login = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const userData = await Users.findOne({ email: email });
-    if (userData) {
-      const passwordMatch = await bcrypt.compare(password, userData.password);
-      if (passwordMatch) {
-        const token = jwt.sign(
-          {
-            user: userData,
-          },
-          process.env.SECRET
-        );
-        return res.json({ status: "OK", user: token });
-      } else {
-        res.json({ message: "Email or Password are Incorrect!" });
-      }
-    } else {
-      res.json({ message: "Email or Password are Incorrect!" });
+
+    if (!userData) {
+      return res.json({ message: "Email or Password are Incorrect!" });
     }
+
+    const passwordMatch = await bcrypt.compare(password, userData.password);
+
+    if (!passwordMatch) {
+      return res.json({ message: "Email or Password are Incorrect!" });
+    }
+
+    const safeUser = userData.toObject();
+    delete safeUser.password;
+
+    const token = jwt.sign(
+      {
+        user: safeUser,
+      },
+      process.env.SECRET
+    );
+
+    return res.json({ status: "OK", user: token });
   } catch (err) {
-    res.status(400).josn(err.message);
     console.log(err.message);
+    return res.status(400).json(err.message);
   }
 };
 
 const signUp = async (req, res) => {
   try {
     const checkEmail = await Users.findOne({ email: req.body.email });
-    if (checkEmail) {
-      res.json({ message: "User Already Exists" });
-    } else {
-      passwordHash = await bcrypt.hash(req.body.password, 10);
-      const user = new Users({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        website: req.body.website,
-        password: passwordHash,
-      });
 
-      await user.save();
+    if (checkEmail) {
+      return res.json({ message: "User Already Exists" });
     }
+
+    const passwordHash = await bcrypt.hash(req.body.password, 10);
+
+    const user = new Users({
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      phone: req.body.phone,
+      website: req.body.website,
+      password: passwordHash,
+    });
+
+    await user.save();
+    return res.status(201).json({ status: "OK" });
   } catch (err) {
-    console.log(error.message);
+    console.log(err.message);
+    return res.status(400).json(err.message);
   }
 };
 
